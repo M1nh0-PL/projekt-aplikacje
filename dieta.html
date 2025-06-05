@@ -93,8 +93,25 @@
         <h3>Przykładowa dieta:</h3>
         <ul>
           ${diet.map(item => `<li>${item}</li>`).join('')}
-        </ul>
-      `;
+        </ul>      `;
+      // Ukryj sekcję diety i dodaj przycisk do rozwijania
+      const dietSection = planDisplay.querySelector('h3');
+      if (dietSection) {
+        const dietList = planDisplay.querySelector('ul');
+        dietList.style.display = 'none';
+        
+        const toggleButton = document.createElement('button');
+        toggleButton.textContent = 'Pokaż przykładową dietę';
+        toggleButton.className = 'btn-secondary';
+        toggleButton.style.marginLeft = '1em';
+        toggleButton.onclick = function() {
+          const isHidden = dietList.style.display === 'none';
+          dietList.style.display = isHidden ? 'block' : 'none';
+          this.textContent = isHidden ? 'Ukryj przykładową dietę' : 'Pokaż przykładową dietę';
+        };
+        
+        dietSection.appendChild(toggleButton);
+      }
     }
 
     function generateSampleDiet(data) {

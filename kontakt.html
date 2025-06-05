@@ -22,12 +22,75 @@
   </header>
   <main>
     <section id="kontakt">
-      <h2>Kontakt</h2>
-      <form id="kontaktForm">
-        <input type="text" placeholder="Imię" required>
-        <input type="email" placeholder="Email" required>
-        <textarea placeholder="Wiadomość" required></textarea>
-        <button type="submit">Wyślij</button>
+      <h2>Kontakt</h2>      <form id="kontaktForm">
+        <!-- Dane osobowe -->
+        <h3>Dane osobowe</h3>
+        <div class="form-group">
+          <label for="imie">Imię:</label>
+          <input type="text" id="imie" name="imie" required>
+          
+          <label for="nazwisko">Nazwisko:</label>
+          <input type="text" id="nazwisko" name="nazwisko" required>
+          
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+          
+          <label for="telefon">Telefon:</label>
+          <input type="tel" id="telefon" name="telefon" pattern="[0-9]{9}" placeholder="123456789">
+        </div>
+
+        <!-- Preferowany kontakt -->
+        <h3>Preferowana forma kontaktu</h3>
+        <div class="form-group">
+          <label><input type="radio" name="kontakt" value="email"> Email</label>
+          <label><input type="radio" name="kontakt" value="telefon"> Telefon</label>
+          <label><input type="radio" name="kontakt" value="sms"> SMS</label>
+        </div>
+
+        <!-- Zainteresowania -->
+        <h3>Interesują mnie</h3>
+        <div class="form-group">
+          <label><input type="checkbox" name="zainteresowania" value="trening"> Plan treningowy</label>
+          <label><input type="checkbox" name="zainteresowania" value="dieta"> Plan dietetyczny</label>
+          <label><input type="checkbox" name="zainteresowania" value="konsultacje"> Konsultacje</label>
+          <label><input type="checkbox" name="zainteresowania" value="suplementy"> Suplementacja</label>
+        </div>
+
+        <!-- Poziom zaawansowania -->
+        <h3>Poziom zaawansowania</h3>
+        <div class="form-group">
+          <select name="poziom" id="poziom" required>
+            <option value="">Wybierz poziom</option>
+            <option value="poczatkujacy">Początkujący</option>
+            <option value="sredniozaawansowany">Średnio zaawansowany</option>
+            <option value="zaawansowany">Zaawansowany</option>
+          </select>
+        </div>
+
+        <!-- Preferowane godziny kontaktu -->
+        <h3>Preferowane godziny kontaktu</h3>
+        <div class="form-group">
+          <select name="godziny" id="godziny" multiple>
+            <option value="rano">8:00 - 12:00</option>
+            <option value="poludnie">12:00 - 16:00</option>
+            <option value="wieczor">16:00 - 20:00</option>
+          </select>
+          <small>Przytrzymaj Ctrl aby wybrać więcej opcji</small>
+        </div>
+
+        <!-- Wiadomość -->
+        <h3>Wiadomość</h3>
+        <div class="form-group">
+          <textarea name="wiadomosc" id="wiadomosc" rows="4" required 
+            placeholder="Napisz swoją wiadomość..."></textarea>
+        </div>
+
+        <!-- Przyciski -->
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary">Wyślij formularz</button>
+          <button type="reset" class="btn-secondary">Wyczyść</button>
+          <button type="button" id="wypelnijPrzyklad" class="btn-tertiary">Wypełnij przykładowymi danymi</button>
+        </div>
       </form>
       <div id="mapaGoogle">
         <!-- Tu możesz dodać iframe z mapą -->
