@@ -57,11 +57,13 @@ main {
 }
 
 .banner {
+  position: relative;
   background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
   padding: 2em 1em;
   border-radius: 10px;
   text-align: center;
-  margin-bottom: 2em;
+  margin: -1em -1em 2em -1em;
+  overflow: hidden;
 }
 
 .banner h2 {
