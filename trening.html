@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trening – FitPlaner</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <h1>FitPlaner</h1>
+      <ul class="nav-links">
+        <li><a href="index.html">Start</a></li>
+        <li><a href="trening.html">Trening</a></li>
+        <li><a href="dieta.html">Dieta</a></li>
+        <li><a href="galeria.html">Galeria</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section id="trening">
+      <h2>Plan treningowy</h2>
+      <form id="treningForm">
+        <label for="dzien">Dzień tygodnia:</label>
+        <select id="dzien" required>
+          <option value="">Wybierz dzień</option>
+          <option value="poniedzialek">Poniedziałek</option>
+          <option value="wtorek">Wtorek</option>
+          <option value="sroda">Środa</option>
+          <option value="czwartek">Czwartek</option>
+          <option value="piatek">Piątek</option>
+          <option value="sobota">Sobota</option>
+          <option value="niedziela">Niedziela</option>
+        </select>
+        <label>Typ ćwiczenia:</label>
+
+        <div class="form-group">
+          <label><input type="checkbox" name="cwiczenie" value="cardio"> Cardio</label>
+          <label><input type="checkbox" name="cwiczenie" value="sila"> Siłowe</label>
+          <label><input type="checkbox" name="cwiczenie" value="rozciaganie"> Rozciągające</label>
+          <label><input type="checkbox" name="cwiczenie" value="rownowazace"> Równoważące</label>
+          <label><input type="checkbox" name="cwiczenie" value="mobilizujace"> Mobilizujące</label>
+          <label><input type="checkbox" name="cwiczenie" value="funkcjonalne"> Funkcjonalne</label>
+      </div>
+
+       <label>Poziom trudności:</label>
+      <div class="form-group">
+        <label><input type="radio" name="poziom" value="poczatkujacy" required> Początkujący</label>
+        <label><input type="radio" name="poziom" value="latwy" required> Łatwy</label>
+        <label><input type="radio" name="poziom" value="sredni" required> Średnio zaawansowany</label>
+        <label><input type="radio" name="poziom" value="zaawansowany" required> Zaawansowany</label>
+        <label><input type="radio" name="poziom" value="bardzozaawansowany"> Bardzo Zaawansowany</label>
+        <label><input type="radio" name="poziom" value="ciezki"> Ciężki</label>
+      </div>
+
+        <!-- Cardio<input type="checkbox" name="cwiczenie" value="cardio">
+        Siłowe<input type="checkbox" name="cwiczenie" value="sila">
+        <br>
+        
+        <input type="radio" name="poziom" value="latwy" required>Łatwy
+        <input type="radio" name="poziom" value="trudny">Trudny -->
+        <button type="submit">Zapisz plan</button>
+      </form>
+      <div id="planTreningowy"></div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 FitPlaner. Wszelkie prawa zastrzeżone.</p>
+  </footer>
+</body>
+</html>
