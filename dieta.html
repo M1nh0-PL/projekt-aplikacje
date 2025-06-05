@@ -23,9 +23,14 @@
   <main>
     <section id="dieta">
       <h2>Plan diety</h2>
-      <form id="dietaForm">
-        <label for="kalorie">Kaloryczność:</label>
-        <input type="number" id="kalorie" name="calories" required>
+      <form id="dietaForm">        <label for="kalorie">Kaloryczność:</label>
+        <select id="kalorie" name="calories" required>
+          <option value="">Wybierz kaloryczność</option>
+          <option value="2000">2000 kcal</option>
+          <option value="2500">2500 kcal</option>
+          <option value="3000">3000 kcal</option>
+          <option value="3500">3500 kcal</option>
+        </select>
         
         <label>Preferencje żywieniowe:</label>
         <label><input type="radio" name="preference" value="wegetariańska"> Wegetariańska</label>
@@ -153,15 +158,44 @@
 
       let diet = diets[data.preference]?.[level] || [];
 
-      // Modyfikacja ze względu na alergie
+      // Modyfikacja ze względu na alergie      // Tabela zamian form gramatycznych dla alergenów
+      const replacements = {
+        nabiał: [
+          [/twaróg\s+z/gi, 'napój roślinny z'],
+          [/kefir\s+z/gi, 'napój roślinny z'],
+          [/jogurt\s+naturalny/gi, 'napój roślinny'],
+          [/ser\s+z/gi, 'zamiennik sera z'],
+          [/(\s+)mleku(\s+)/gi, '$1napoju roślinnym$2'],
+          [/ryż\s+na\s+mleku/gi, 'ryż na napoju roślinnym']
+        ],
+        gluten: [
+          [/z\s+pieczywem/gi, 'z pierczywem bezglutenowym'],
+          [/kanapki\s+z/gi, 'kanapki bezglutenowe z'],
+          [/z\s+makaronem/gi, 'z makaronem bezglutenowym'],
+          [/z\s+bułką/gi, 'z pieczywem bezglutenowym'],
+          [/z\s+chlebem/gi, 'z chlebem bezglutenowym']
+        ],
+        orzechy: [
+          [/orzechami/gi, 'pestkami słonecznika'],
+          [/masłem\s+orzechowym/gi, 'pastą ze słonecznika']
+        ]
+      };
+
+      // Zastosuj odpowiednie zamiany dla każdego alergenu
       if (data.allergies?.includes('nabiał')) {
-        diet = diet.map(item => item.replace(/(twaróg|kefir|jogurt|ser|mleko)/gi, 'napój roślinny'));
+        replacements.nabiał.forEach(([pattern, replacement]) => {
+          diet = diet.map(item => item.replace(pattern, replacement));
+        });
       }
       if (data.allergies?.includes('gluten')) {
-        diet = diet.map(item => item.replace(/(pieczywem|kanapki|makaronem|bułka|chleb)/gi, 'alternatywa bezglutenowa'));
+        replacements.gluten.forEach(([pattern, replacement]) => {
+          diet = diet.map(item => item.replace(pattern, replacement));
+        });
       }
       if (data.allergies?.includes('orzechy')) {
-        diet = diet.map(item => item.replace(/orzech(y|ami)?/gi, 'pestki słonecznika'));
+        replacements.orzechy.forEach(([pattern, replacement]) => {
+          diet = diet.map(item => item.replace(pattern, replacement));
+        });
       }
 
       return diet;
