@@ -55,11 +55,9 @@
         <h3>Zapisane diety</h3>
         <table id="dietsTable">
           <thead>
-            <tr>
-              <th>Kaloryczność</th>
+            <tr>              <th>Kaloryczność</th>
               <th>Preferencje</th>
               <th>Alergie</th>
-              <th>Posiłki</th>
               <th>Akcje</th>
             </tr>
           </thead>
@@ -68,76 +66,125 @@
       </section>
     </section>
   </main>  <script>
+    /**
+     * Elementy DOM
+     */
     const form = document.getElementById('dietaForm');
     const planDisplay = document.getElementById('planDisplay');
     const dietsTableBody = document.querySelector('#dietsTable tbody');
 
-    // Załaduj zapisane diety przy starcie strony
-    function loadSavedDiets() {
-      const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
-      dietsTableBody.innerHTML = '';
-      
-      savedDiets.forEach((dietPlan, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${dietPlan.calories} kcal</td>
-          <td>${dietPlan.preference}</td>
-          <td>${dietPlan.allergies.length ? dietPlan.allergies.join(', ') : 'brak'}</td>
-          <td>${dietPlan.diet.slice(0, 2).map(meal => meal.split(' ')[0]).join(', ')}...</td>
-          <td>
-            <button class="delete-diet" data-index="${index}">Usuń</button>
-            <button class="show-diet" data-index="${index}">Pokaż</button>
-          </td>
-        `;
-        dietsTableBody.appendChild(row);
+    /**
+     * Baza danych diet
+     */
+    const DIET_DATABASE = {
+      wegetariańska: {
+        2000: [
+          'Owsianka z owocami i orzechami',
+          'Zupa z soczewicy',
+          'Makaron pełnoziarnisty z warzywami',
+          'Jogurt naturalny z miodem'
+        ],
+        2500: [
+          'Smoothie z bananem i masłem orzechowym',
+          'Zupa z ciecierzycy i ziemniaków',
+          'Gulasz warzywny z kaszą gryczaną',
+          'Sałatka z awokado i jajkiem'
+        ],
+        3000: [
+          'Tofu z ryżem i warzywami',
+          'Burgery z soczewicy',
+          'Zupa krem z brokułów z grzankami',
+          'Pudding chia z mlekiem roślinnym'
+        ],
+        3500: [
+          'Szakszuka z pieczywem pełnoziarnistym',
+          'Ziemniaki z fasolą i sosem pomidorowym',
+          'Kasza jaglana z warzywami i oliwą',
+          'Mus owocowy z bakaliami'
+        ]
+      },
+      tradycyjna: {
+        2000: [
+          'Jajecznica z pieczywem i pomidorem',
+          'Kurczak z ryżem i surówką',
+          'Zupa ogórkowa z ziemniakami',
+          'Twaróg z miodem i owocami'
+        ],
+        2500: [
+          'Kanapki z wędliną i warzywami',
+          'Gulasz z wołowiny z kaszą jęczmienną',
+          'Zupa pomidorowa z ryżem',
+          'Kefir z otrębami'
+        ],
+        3000: [
+          'Omlet z warzywami',
+          'Schabowy z ziemniakami i buraczkami',
+          'Rosół z makaronem',
+          'Ryż na mleku z cynamonem'
+        ],
+        3500: [
+          'Parówki z jajkiem i bułką',
+          'Bigos z chlebem',
+          'Zupa fasolowa',
+          'Sałatka jarzynowa z majonezem'
+        ]
+      }
+    };
+
+    /**
+     * Słownik zamienników dla alergenów
+     */
+    const ALLERGEN_REPLACEMENTS = {
+      nabiał: [
+        [/twaróg\s+z/gi, 'napój roślinny z'],
+        [/kefir\s+z/gi, 'napój roślinny z'],
+        [/jogurt\s+naturalny/gi, 'napój roślinny'],
+        [/ser\s+z/gi, 'zamiennik sera z'],
+        [/(\s+)mleku(\s+)/gi, '$1napoju roślinnym$2'],
+        [/ryż\s+na\s+mleku/gi, 'ryż na napoju roślinnym']
+      ],
+      gluten: [
+        [/z\s+pieczywem/gi, 'z pieczywem bezglutenowym'],
+        [/kanapki\s+z/gi, 'Kanapki bezglutenowe z'],
+        [/z\s+makaronem/gi, 'z makaronem bezglutenowym'],
+        [/z\s+bułką/gi, 'z pieczywem bezglutenowym'],
+        [/z\s+chlebem/gi, 'z chlebem bezglutenowym']
+      ],
+      orzechy: [
+        [/orzechami/gi, 'pestkami słonecznika'],
+        [/masłem\s+orzechowym/gi, 'pastą ze słonecznika']
+      ]
+    };
+
+    /**
+     * Generuje plan diety na podstawie preferencji użytkownika
+     * @param {Object} data - Dane z formularza
+     * @returns {Array} Lista posiłków
+     */
+    function generateSampleDiet(data) {
+      const kcal = parseInt(data.calories);
+      const level = [2000, 2500, 3000, 3500].includes(kcal) ? kcal : 2000;
+      let diet = DIET_DATABASE[data.preference]?.[level] || [];
+
+      // Zastosuj zamienniki dla wybranych alergenów
+      data.allergies?.forEach(allergen => {
+        if (ALLERGEN_REPLACEMENTS[allergen]) {
+          ALLERGEN_REPLACEMENTS[allergen].forEach(([pattern, replacement]) => {
+            diet = diet.map(item => item.replace(pattern, replacement));
+          });
+        }
       });
+
+      return diet;
     }
 
-    // Usuń dietę z local storage
-    dietsTableBody.addEventListener('click', (e) => {
-      if (e.target.classList.contains('delete-diet')) {
-        const index = e.target.dataset.index;
-        const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
-        savedDiets.splice(index, 1);
-        localStorage.setItem('savedDiets', JSON.stringify(savedDiets));
-        loadSavedDiets();
-        planDisplay.innerHTML = '';
-      } else if (e.target.classList.contains('show-diet')) {
-        const index = e.target.dataset.index;
-        const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
-        const dietPlan = savedDiets[index];
-        showPlan(dietPlan);
-      }
-    });    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const data = {
-        calories: formData.get('calories'),
-        preference: formData.get('preference'),
-        allergies: formData.getAll('allergies')
-      };
-      
-      // Wygeneruj i zapisz dietę
-      const diet = generateSampleDiet(data);
-      const dietPlan = {
-        ...data,
-        diet: diet
-      };
-
-      // Zapisz do local storage
-      const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
-      savedDiets.push(dietPlan);
-      localStorage.setItem('savedDiets', JSON.stringify(savedDiets));
-
-      // Pokaż komunikat o sukcesie i dietę
-      showPlan(dietPlan);
-      
-      // Odśwież tabelę i wyczyść formularz
-      loadSavedDiets();
-      form.reset();
-    });    function showPlan(data) {      planDisplay.innerHTML = `
-        <div class="success-message">
-          <h3>Plan diety został zapisany!</h3>
+    /**
+     * Wyświetla szczegóły planu diety
+     * @param {Object} data - Dane diety do wyświetlenia
+     */
+    function showPlan(data) {      planDisplay.innerHTML = `
+        <div class="diet-details">
+          <h3>Plan diety</h3>
           <div class="diet-table">
             <table>
               <thead>
@@ -175,112 +222,72 @@
             </table>
           </div>
         </div>
-      `;// Tabela jest teraz zawsze widoczna
+      `;
     }
 
-    function generateSampleDiet(data) {
-      const kcal = parseInt(data.calories);
-      const level = [2000, 2500, 3000, 3500].includes(kcal) ? kcal : 2000;
+    /**
+     * Wyświetla listę zapisanych diet
+     */
+    function loadSavedDiets() {
+      const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
+      dietsTableBody.innerHTML = '';
+      
+      savedDiets.forEach((dietPlan, index) => {
+        const row = document.createElement('tr');        row.innerHTML = `
+          <td>${dietPlan.calories} kcal</td>
+          <td>${dietPlan.preference}</td>
+          <td>${dietPlan.allergies.length ? dietPlan.allergies.join(', ') : 'brak'}</td>
+          <td>
+            <button class="delete-diet" data-index="${index}">Usuń</button>
+            <button class="show-diet" data-index="${index}">Pokaż</button>
+          </td>
+        `;
+        dietsTableBody.appendChild(row);
+      });
+    }
 
-      const diets = {
-        wegetariańska: {
-          2000: [
-            'Owsianka z owocami i orzechami',
-            'Zupa z soczewicy',
-            'Makaron pełnoziarnisty z warzywami',
-            'Jogurt naturalny z miodem'
-          ],
-          2500: [
-            'Smoothie z bananem i masłem orzechowym',
-            'Zupa z ciecierzycy i ziemniaków',
-            'Gulasz warzywny z kaszą gryczaną',
-            'Sałatka z awokado i jajkiem'
-          ],
-          3000: [
-            'Tofu z ryżem i warzywami',
-            'Burgery z soczewicy',
-            'Zupa krem z brokułów z grzankami',
-            'Pudding chia z mlekiem roślinnym'
-          ],
-          3500: [
-            'Szakszuka z pieczywem pełnoziarnistym',
-            'Ziemniaki z fasolą i sosem pomidorowym',
-            'Kasza jaglana z warzywami i oliwą',
-            'Mus owocowy z bakaliami'
-          ]
-        },
-        tradycyjna: {
-          2000: [
-            'Jajecznica z pieczywem i pomidorem',
-            'Kurczak z ryżem i surówką',
-            'Zupa ogórkowa z ziemniakami',
-            'Twaróg z miodem i owocami'
-          ],
-          2500: [
-            'Kanapki z wędliną i warzywami',
-            'Gulasz z wołowiny z kaszą jęczmienną',
-            'Zupa pomidorowa z ryżem',
-            'Kefir z otrębami'
-          ],
-          3000: [
-            'Omlet z warzywami',
-            'Schabowy z ziemniakami i buraczkami',
-            'Rosół z makaronem',
-            'Ryż na mleku z cynamonem'
-          ],
-          3500: [
-            'Parówki z jajkiem i bułką',
-            'Bigos z chlebem',
-            'Zupa fasolowa',
-            'Sałatka jarzynowa z majonezem'
-          ]
-        }
+    // Nasłuchiwanie zdarzeń
+
+    // Obsługa formularza
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = {
+        calories: formData.get('calories'),
+        preference: formData.get('preference'),
+        allergies: formData.getAll('allergies')
       };
+      
+      const diet = generateSampleDiet(data);
+      const dietPlan = { ...data, diet };
 
-      let diet = diets[data.preference]?.[level] || [];
+      const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
+      savedDiets.push(dietPlan);
+      localStorage.setItem('savedDiets', JSON.stringify(savedDiets));
 
-      // Modyfikacja ze względu na alergie      // Tabela zamian form gramatycznych dla alergenów
-      const replacements = {
-        nabiał: [
-          [/twaróg\s+z/gi, 'napój roślinny z'],
-          [/kefir\s+z/gi, 'napój roślinny z'],
-          [/jogurt\s+naturalny/gi, 'napój roślinny'],
-          [/ser\s+z/gi, 'zamiennik sera z'],
-          [/(\s+)mleku(\s+)/gi, '$1napoju roślinnym$2'],
-          [/ryż\s+na\s+mleku/gi, 'ryż na napoju roślinym']
-        ],
-        gluten: [
-          [/z\s+pieczywem/gi, 'z pierczywem bezglutenowym'],
-          [/kanapki\s+z/gi, 'Kanapki bezglutenowe z'],
-          [/z\s+makaronem/gi, 'z makaronem bezglutenowym'],
-          [/z\s+bułką/gi, 'z pieczywem bezglutenowym'],
-          [/z\s+chlebem/gi, 'z chlebem bezglutenowym']
-        ],
-        orzechy: [
-          [/orzechami/gi, 'pestkami słonecznika'],
-          [/masłem\s+orzechowym/gi, 'pastą ze słonecznika']
-        ]
-      };
+      showPlan(dietPlan);
+      loadSavedDiets();
+      form.reset();
+    });
 
-      // Zastosuj odpowiednie zamiany dla każdego alergenu
-      if (data.allergies?.includes('nabiał')) {
-        replacements.nabiał.forEach(([pattern, replacement]) => {
-          diet = diet.map(item => item.replace(pattern, replacement));
-        });
+    // Obsługa przycisków w tabeli
+    dietsTableBody.addEventListener('click', (e) => {
+      if (!e.target.matches('button')) return;
+      
+      const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
+      const index = e.target.dataset.index;
+
+      if (e.target.classList.contains('delete-diet')) {
+        savedDiets.splice(index, 1);
+        localStorage.setItem('savedDiets', JSON.stringify(savedDiets));
+        loadSavedDiets();
+        planDisplay.innerHTML = '';
+      } else if (e.target.classList.contains('show-diet')) {
+        showPlan(savedDiets[index]);
       }
-      if (data.allergies?.includes('gluten')) {
-        replacements.gluten.forEach(([pattern, replacement]) => {
-          diet = diet.map(item => item.replace(pattern, replacement));
-        });
-      }
-      if (data.allergies?.includes('orzechy')) {
-        replacements.orzechy.forEach(([pattern, replacement]) => {
-          diet = diet.map(item => item.replace(pattern, replacement));
-        });
-      }
+    });
 
-      return diet;
-    }    // Załaduj zapisane diety przy starcie strony
+    // Załaduj zapisane diety przy starcie
     loadSavedDiets();
   </script>
   <footer>
