@@ -6,6 +6,7 @@
   <title>Trening – FitPlaner</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="script.js"></script>
+  <link rel="shortcut icon" href="img/ikona.jpg" type="image/x-icon">
 </head>
 <body>
   <header>
@@ -15,7 +16,7 @@
         <li><a href="index.html">Start</a></li>
         <li><a href="trening.html">Trening</a></li>
         <li><a href="dieta.html">Dieta</a></li>
-        <li><a href="galeria.html">Galeria</a></li>
+        <li><a href="galeria2.html">Galeria</a></li>
         <li><a href="kontakt.html">Kontakt</a></li>
       </ul>
     </nav>
@@ -27,13 +28,13 @@
         <label for="dzien">Dzień tygodnia:</label>
         <select id="dzien" required>
           <option value="">Wybierz dzień</option>
-          <option value="poniedzialek">Poniedziałek</option>
-          <option value="wtorek">Wtorek</option>
-          <option value="sroda">Środa</option>
-          <option value="czwartek">Czwartek</option>
-          <option value="piatek">Piątek</option>
-          <option value="sobota">Sobota</option>
-          <option value="niedziela">Niedziela</option>
+          <option value="Poniedzialek">Poniedziałek</option>
+          <option value="Wtorek">Wtorek</option>
+          <option value="Środa">Środa</option>
+          <option value="Czwartek">Czwartek</option>
+          <option value="Piątek">Piątek</option>
+          <option value="Sobota">Sobota</option>
+          <option value="Niedziela">Niedziela</option>
         </select>
         <label>Typ ćwiczenia:</label>
 
@@ -48,27 +49,108 @@
 
        <label>Poziom trudności:</label>
       <div class="form-group">
-        <label><input type="radio" name="poziom" value="poczatkujacy" required> Początkujący</label>
-        <label><input type="radio" name="poziom" value="latwy" required> Łatwy</label>
-        <label><input type="radio" name="poziom" value="sredni" required> Średnio zaawansowany</label>
+        <label><input type="radio" name="poziom" value="początkujący" required> Początkujący</label>
+        <label><input type="radio" name="poziom" value="Latwy" required> Łatwy</label>
+        <label><input type="radio" name="poziom" value="średni" required> Średnio zaawansowany</label>
         <label><input type="radio" name="poziom" value="zaawansowany" required> Zaawansowany</label>
-        <label><input type="radio" name="poziom" value="bardzozaawansowany"> Bardzo Zaawansowany</label>
+        <label><input type="radio" name="poziom" value="bardzo zaawansowany"> Bardzo Zaawansowany</label>
         <label><input type="radio" name="poziom" value="ciężki"> Ciężki</label>
       </div>
 
-        <!-- Cardio<input type="checkbox" name="cwiczenie" value="cardio">
-        Siłowe<input type="checkbox" name="cwiczenie" value="sila">
-        <br>
-        
-        <input type="radio" name="poziom" value="latwy" required>Łatwy
-        <input type="radio" name="poziom" value="trudny">Trudny -->
-        <button type="submit">Zapisz plan</button>
-      </form>
-      <div id="planTreningowy"></div>
+      <button type="submit">Zapisz plan</button>
+      </form>      <div id="planTreningowy"></div>
+      
+      <section id="savedWorkouts">
+        <h3>Zapisane treningi</h3>
+        <table id="workoutsTable">
+          <thead>
+            <tr>
+              <th>Dzień tygodnia</th>
+              <th>Typ ćwiczeń</th>
+              <th>Poziom trudności</th>
+              <th>Akcje</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
     </section>
   </main>
   <footer>
     <p>&copy; 2025 FitPlaner. Wszelkie prawa zastrzeżone.</p>
   </footer>
+  <script>
+    const form = document.getElementById('treningForm');
+    const planDisplay = document.getElementById('planTreningowy');
+    const workoutsTableBody = document.querySelector('#workoutsTable tbody');
+
+    // Load saved workouts on page load
+    function loadSavedWorkouts() {
+      const savedWorkouts = JSON.parse(localStorage.getItem('savedWorkouts') || '[]');
+      workoutsTableBody.innerHTML = '';
+      
+      savedWorkouts.forEach((workout, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${workout.dzien}</td>
+          <td>${workout.cwiczenia.join(', ')}</td>
+          <td>${workout.poziom}</td>
+          <td>
+            <button class="delete-workout" data-index="${index}">Usuń</button>
+          </td>
+        `;
+        workoutsTableBody.appendChild(row);
+      });
+    }
+
+    // Delete workout from local storage
+    workoutsTableBody.addEventListener('click', (e) => {
+      if (e.target.classList.contains('delete-workout')) {
+        const index = e.target.dataset.index;
+        const savedWorkouts = JSON.parse(localStorage.getItem('savedWorkouts') || '[]');
+        savedWorkouts.splice(index, 1);
+        localStorage.setItem('savedWorkouts', JSON.stringify(savedWorkouts));
+        loadSavedWorkouts();
+      }
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const dzien = document.getElementById('dzien').value;
+      const cwiczenia = Array.from(document.querySelectorAll('input[name="cwiczenie"]:checked'))
+        .map(input => input.value);
+      const poziom = document.querySelector('input[name="poziom"]:checked').value;
+
+      const workout = {
+        dzien: dzien,
+        cwiczenia: cwiczenia,
+        poziom: poziom
+      };
+
+      // Save to local storage
+      const savedWorkouts = JSON.parse(localStorage.getItem('savedWorkouts') || '[]');
+      savedWorkouts.push(workout);
+      localStorage.setItem('savedWorkouts', JSON.stringify(savedWorkouts));
+
+      // Show success message
+      planDisplay.innerHTML = `
+        <div class="success-message">
+          <h3>Plan treningu został zapisany!</h3>
+          <p><strong>Dzień:</strong> ${dzien}</p>
+          <p><strong>Ćwiczenia:</strong> ${cwiczenia.join(', ')}</p>
+          <p><strong>Poziom:</strong> ${poziom}</p>
+        </div>
+      `;
+
+      // Refresh table and reset form
+      loadSavedWorkouts();
+      form.reset();
+    });
+
+    // Load saved workouts when page loads
+    loadSavedWorkouts();
+  </script>
 </body>
 </html>

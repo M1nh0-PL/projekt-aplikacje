@@ -50,6 +50,7 @@ header {
 main {
   max-width: 900px;
   margin: 2em auto;
+  min-height: calc(100vh - 240px);
   padding: 1em;
   background: #fff;
   border-radius: 10px;
@@ -297,8 +298,94 @@ form button {
   font-size: 1em;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 0.5em;
-  transition: background 0.2s;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 1em;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background-color: #2d3e50;
+  color: white;
+  font-weight: 600;
+}
+
+.diet-info-header {
+  background-color: #f8f9fa;
+  color: #2d3e50;
+  padding: 1.2em;
+}
+
+.diet-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1em;
+}
+
+.diet-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: white;
+  padding: 0.8em;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.diet-info-label {
+  font-size: 0.8em;
+  color: #666;
+  margin-bottom: 0.3em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.diet-info-value {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #2d3e50;
+}
+
+.table-headers th {
+  background-color: #2d3e50;
+  color: white;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+.diet-info {
+  background: #f8f9fa;
+  padding: 1em;
+  border-radius: 8px;
+  margin-bottom: 1.5em;
+}
+
+.diet-section {
+  margin-top: 2em;
+  display: block !important;
+}
+
+.diet-table {
+  margin-top: 1em;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 form button:hover {
@@ -315,24 +402,36 @@ form button:hover {
 }
 
 #galeriaZdjec {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1em;
-  margin-top: 1em;
+  margin: 2em auto;
+  max-width: 900px;
+  justify-items: center;
+  align-items: center;
+  padding: 0 1em;
+}
+
+#galeriaZdjec a {
+  display: block;
+  aspect-ratio: 3/2;
+  width: 100%;
 }
 
 #galeriaZdjec img {
-  width: 180px;
-  height: 120px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 1px 6px rgba(0,0,0,0.08);
   transition: transform 0.2s;
+  cursor: pointer;
 }
 
 #galeriaZdjec img:hover {
   transform: scale(1.07);
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  opacity: 0.7;
 }
 
 footer {
@@ -342,6 +441,297 @@ footer {
   padding: 1em 0;
   margin-top: 2em;
   border-radius: 0 0 10px 10px;
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  display: block;
+  max-width: 90%;
+  max-height: 85vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+#modalCaption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+}
+
+.close, .prev, .next {
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  position: fixed;
+  cursor: pointer;
+}
+
+.close {
+  right: 35px;
+  top: 15px;
+}
+
+.prev, .next {
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 16px;
+  transition: 0.6s ease;
+}
+
+.prev {
+  left: 35px;
+}
+
+.next {
+  right: 35px;
+}
+
+.prev:hover, .next:hover, .close:hover {
+  color: #bbb;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0}
+  to {opacity: 1}
+}
+
+.fade {
+  animation: fadeIn 0.5s;
+}
+
+.centered-image-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 2em 0;
+}
+
+.about-us-image {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#galeria {
+  text-align: center;
+}
+
+#galeria h2,
+#galeria h3,
+#galeria p {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+#savedWorkouts {
+  margin-top: 2em;
+  padding: 1em;
+}
+
+#workoutsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#workoutsTable th,
+#workoutsTable td {
+  padding: 0.8em;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+#workoutsTable th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #2d3e50;
+}
+
+#workoutsTable tr:hover {
+  background-color: #f5f5f5;
+}
+
+.delete-workout {
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.delete-workout:hover {
+  background: #cc0000;
+}
+
+#savedDiets {
+  margin-top: 2em;
+  padding: 1em;
+}
+
+#dietsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#dietsTable th,
+#dietsTable td {
+  padding: 0.8em;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+#dietsTable th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #2d3e50;
+}
+
+#dietsTable tr:hover {
+  background-color: #f5f5f5;
+}
+
+.delete-diet {
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.delete-diet:hover {
+  background: #cc0000;
+}
+
+.success-message {
+  background: #dff0d8;
+  color: #3c763d;
+  padding: 1em;
+  border-radius: 4px;
+  margin: 1em 0;
+  border: 1px solid #d6e9c6;
+}
+
+.success-message h3 {
+  color: #3c763d;
+  margin-top: 0;
+  border-bottom-color: #3c763d;
+}
+
+.success-message p {
+  margin: 0.5em 0;
+}
+
+.diet-details td {
+  background: #f8f9fa;
+  padding: 1em 2em !important;
+}
+
+.diet-plan {
+  padding: 1em;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.diet-plan h4 {
+  color: #2d3e50;
+  margin: 0 0 1em 0;
+}
+
+.diet-plan ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.diet-plan li {
+  margin: 0.5em 0;
+  padding: 0.5em;
+  border-bottom: 1px solid #eee;
+}
+
+.diet-plan li:last-child {
+  border-bottom: none;
+}
+
+.show-diet {
+  background: #2d3e50;
+  color: white;
+  border: none;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-right: 0.5em;
+}
+
+.show-diet:hover {
+  background: #3d4e60;
+}
+
+.diet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.diet-table th,
+.diet-table td {
+  padding: 1em;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.diet-table th {
+  background: #2d3e50;
+  color: white;
+  font-weight: 600;
+}
+
+.diet-table tr:last-child td {
+  border-bottom: none;
+}
+
+.diet-table tr:hover td {
+  background-color: #f5f5f5;
+}
+
+.diet-table td:first-child {
+  width: 30%;
+  font-weight: 600;
+  color: #2d3e50;
 }
 
 @media (max-width: 700px) {
@@ -357,9 +747,12 @@ footer {
   }
   .nav-links li {
     padding: 0.3em 0;
+  }  #galeriaZdjec {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5em;
   }
-  #galeriaZdjec img {
-    width: 100px;
-    height: 70px;
+
+  main {
+    min-height: calc(100vh - 374px);
   }
 }

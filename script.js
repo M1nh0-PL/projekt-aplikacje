@@ -117,3 +117,75 @@ if (kontaktForm && wypelnijPrzyklad) {
     });
   }
 
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const captionText = document.getElementById('modalCaption');
+    const closeBtn = document.querySelector('.close');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+    const images = document.querySelectorAll('#galeriaZdjec img');
+    let currentImageIndex = 0;
+
+    // Open modal when clicking an image
+    images.forEach((img, index) => {
+      img.addEventListener('click', function() {
+        modal.style.display = 'block';
+        modalImg.src = this.src;
+        modalImg.classList.add('fade');
+        captionText.textContent = this.getAttribute('data-title');
+        currentImageIndex = index;
+        checkArrowVisibility();
+      });
+    });
+
+    // Close modal
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Navigate between images
+    function showImage(index) {
+      if (index >= 0 && index < images.length) {
+        currentImageIndex = index;
+        modalImg.src = images[index].src;
+        modalImg.classList.add('fade');
+        captionText.textContent = images[index].getAttribute('data-title');
+        checkArrowVisibility();
+      }
+    }
+
+    function checkArrowVisibility() {
+      prevBtn.style.display = currentImageIndex === 0 ? 'none' : 'block';
+      nextBtn.style.display = currentImageIndex === images.length - 1 ? 'none' : 'block';
+    }
+
+    prevBtn.addEventListener('click', function() {
+      showImage(currentImageIndex - 1);
+    });
+
+    nextBtn.addEventListener('click', function() {
+      showImage(currentImageIndex + 1);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (modal.style.display === 'block') {
+        if (e.key === 'ArrowLeft') {
+          showImage(currentImageIndex - 1);
+        } else if (e.key === 'ArrowRight') {
+          showImage(currentImageIndex + 1);
+        } else if (e.key === 'Escape') {
+          closeModal();
+        }
+      }
+    });
+  });
+

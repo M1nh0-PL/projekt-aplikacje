@@ -15,7 +15,7 @@
         <li><a href="index.html">Start</a></li>
         <li><a href="trening.html">Trening</a></li>
         <li><a href="dieta.html">Dieta</a></li>
-        <li><a href="galeria.html">Galeria</a></li>
+        <li><a href="galeria2.html">Galeria</a></li>
         <li><a href="kontakt.html">Kontakt</a></li>
       </ul>
     </nav>
@@ -23,7 +23,9 @@
   <main>
     <section id="dieta">
       <h2>Plan diety</h2>
-      <form id="dietaForm">        <label for="kalorie">Kaloryczność:</label>
+      <p>Wybierz swoje preferencje dietetyczne i kaloryczność, a my przygotujemy dla Ciebie plan diety.</p>
+      <form id="dietaForm">        
+        <label for="kalorie">Kaloryczność:</label>
         <select id="kalorie" name="calories" required>
           <option value="">Wybierz kaloryczność</option>
           <option value="2000">2000 kcal</option>
@@ -41,77 +43,139 @@
         <label><input type="checkbox" name="allergies" value="nabiał"> Nabiał</label>
         <label><input type="checkbox" name="allergies" value="gluten"> Gluten</label>
 
-        <label>Dodatkowe informacje:
+        <!-- <label>Dodatkowe informacje:
           <textarea name="notes" rows="4"></textarea>
-        </label>
+        </label> -->
 
         <button type="submit">Zapisz dietę</button>
-        <button type="button" id="loadPlan">Wygeneruj przykładową dietę</button>
-      </form>
-      <div id="planDisplay"></div>
+        <!-- <button type="button" id="loadPlan">Wygeneruj przykładową dietę</button> -->
+      </form>      <div id="planDisplay"></div>
+      
+      <section id="savedDiets">
+        <h3>Zapisane diety</h3>
+        <table id="dietsTable">
+          <thead>
+            <tr>
+              <th>Kaloryczność</th>
+              <th>Preferencje</th>
+              <th>Alergie</th>
+              <th>Posiłki</th>
+              <th>Akcje</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
     </section>
-  </main>
-  <script>
-
+  </main>  <script>
     const form = document.getElementById('dietaForm');
     const planDisplay = document.getElementById('planDisplay');
-    const loadPlanBtn = document.getElementById('loadPlan');
+    const dietsTableBody = document.querySelector('#dietsTable tbody');
 
-    form.addEventListener('submit', (e) => {
+    // Załaduj zapisane diety przy starcie strony
+    function loadSavedDiets() {
+      const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
+      dietsTableBody.innerHTML = '';
+      
+      savedDiets.forEach((dietPlan, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${dietPlan.calories} kcal</td>
+          <td>${dietPlan.preference}</td>
+          <td>${dietPlan.allergies.length ? dietPlan.allergies.join(', ') : 'brak'}</td>
+          <td>${dietPlan.diet.slice(0, 2).map(meal => meal.split(' ')[0]).join(', ')}...</td>
+          <td>
+            <button class="delete-diet" data-index="${index}">Usuń</button>
+            <button class="show-diet" data-index="${index}">Pokaż</button>
+          </td>
+        `;
+        dietsTableBody.appendChild(row);
+      });
+    }
+
+    // Usuń dietę z local storage
+    dietsTableBody.addEventListener('click', (e) => {
+      if (e.target.classList.contains('delete-diet')) {
+        const index = e.target.dataset.index;
+        const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
+        savedDiets.splice(index, 1);
+        localStorage.setItem('savedDiets', JSON.stringify(savedDiets));
+        loadSavedDiets();
+        planDisplay.innerHTML = '';
+      } else if (e.target.classList.contains('show-diet')) {
+        const index = e.target.dataset.index;
+        const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
+        const dietPlan = savedDiets[index];
+        showPlan(dietPlan);
+      }
+    });    form.addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(form);
       const data = {
         calories: formData.get('calories'),
         preference: formData.get('preference'),
-        allergies: formData.getAll('allergies'),
-        notes: formData.get('notes')
+        allergies: formData.getAll('allergies')
       };
-      localStorage.setItem('dietPlan', JSON.stringify(data));
-      showPlan(data);
-    });
-
-    loadPlanBtn.addEventListener('click', () => {
-      // Wygeneruj przykładową dietę na podstawie domyślnych danych
-      const data = {
-        calories: 2000,
-        preference: 'wegetariańska',
-        allergies: [],
-        notes: ''
-      };
-      localStorage.setItem('dietPlan', JSON.stringify(data));
-      showPlan(data);
-    });
-
-    function showPlan(data) {
+      
+      // Wygeneruj i zapisz dietę
       const diet = generateSampleDiet(data);
-      planDisplay.innerHTML = `
-        <h2>Twój Plan</h2>
-        <p><strong>Kaloryczność:</strong> ${data.calories}</p>
-        <p><strong>Preferencje:</strong> ${data.preference}</p>
-        <p><strong>Alergie:</strong> ${data.allergies?.join(', ') || 'brak'}</p>
-        <p><strong>Notatki:</strong> ${data.notes || 'brak'}</p>
-        <h3>Przykładowa dieta:</h3>
-        <ul>
-          ${diet.map(item => `<li>${item}</li>`).join('')}
-        </ul>      `;
-      // Ukryj sekcję diety i dodaj przycisk do rozwijania
-      const dietSection = planDisplay.querySelector('h3');
-      if (dietSection) {
-        const dietList = planDisplay.querySelector('ul');
-        dietList.style.display = 'none';
-        
-        const toggleButton = document.createElement('button');
-        toggleButton.textContent = 'Pokaż przykładową dietę';
-        toggleButton.className = 'btn-secondary';
-        toggleButton.style.marginLeft = '1em';
-        toggleButton.onclick = function() {
-          const isHidden = dietList.style.display === 'none';
-          dietList.style.display = isHidden ? 'block' : 'none';
-          this.textContent = isHidden ? 'Ukryj przykładową dietę' : 'Pokaż przykładową dietę';
-        };
-        
-        dietSection.appendChild(toggleButton);
-      }
+      const dietPlan = {
+        ...data,
+        diet: diet
+      };
+
+      // Zapisz do local storage
+      const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
+      savedDiets.push(dietPlan);
+      localStorage.setItem('savedDiets', JSON.stringify(savedDiets));
+
+      // Pokaż komunikat o sukcesie i dietę
+      showPlan(dietPlan);
+      
+      // Odśwież tabelę i wyczyść formularz
+      loadSavedDiets();
+      form.reset();
+    });    function showPlan(data) {      planDisplay.innerHTML = `
+        <div class="success-message">
+          <h3>Plan diety został zapisany!</h3>
+          <div class="diet-table">
+            <table>
+              <thead>
+                <tr>
+                  <th colspan="2" class="diet-info-header">
+                    <div class="diet-info-grid">
+                      <div class="diet-info-item">
+                        <span class="diet-info-label">Kaloryczność:</span>
+                        <span class="diet-info-value">${data.calories} kcal</span>
+                      </div>
+                      <div class="diet-info-item">
+                        <span class="diet-info-label">Preferencje:</span>
+                        <span class="diet-info-value">${data.preference}</span>
+                      </div>
+                      <div class="diet-info-item">
+                        <span class="diet-info-label">Alergie:</span>
+                        <span class="diet-info-value">${data.allergies?.length ? data.allergies.join(', ') : 'brak'}</span>
+                      </div>
+                    </div>
+                  </th>
+                </tr>
+                <tr class="table-headers">
+                  <th>Posiłek</th>
+                  <th>Danie</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.diet.map((item, index) => `
+                  <tr>
+                    <td>Posiłek ${index + 1}</td>
+                    <td>${item}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;// Tabela jest teraz zawsze widoczna
     }
 
     function generateSampleDiet(data) {
@@ -166,7 +230,7 @@
           ],
           3500: [
             'Parówki z jajkiem i bułką',
-            'Bigós z chlebem',
+            'Bigos z chlebem',
             'Zupa fasolowa',
             'Sałatka jarzynowa z majonezem'
           ]
@@ -183,11 +247,11 @@
           [/jogurt\s+naturalny/gi, 'napój roślinny'],
           [/ser\s+z/gi, 'zamiennik sera z'],
           [/(\s+)mleku(\s+)/gi, '$1napoju roślinnym$2'],
-          [/ryż\s+na\s+mleku/gi, 'ryż na napoju roślinnym']
+          [/ryż\s+na\s+mleku/gi, 'ryż na napoju roślinym']
         ],
         gluten: [
           [/z\s+pieczywem/gi, 'z pierczywem bezglutenowym'],
-          [/kanapki\s+z/gi, 'kanapki bezglutenowe z'],
+          [/kanapki\s+z/gi, 'Kanapki bezglutenowe z'],
           [/z\s+makaronem/gi, 'z makaronem bezglutenowym'],
           [/z\s+bułką/gi, 'z pieczywem bezglutenowym'],
           [/z\s+chlebem/gi, 'z chlebem bezglutenowym']
@@ -216,15 +280,8 @@
       }
 
       return diet;
-    }
-
-    // Załaduj zapisany plan po odświeżeniu strony
-    window.addEventListener('load', () => {
-      const saved = localStorage.getItem('dietPlan');
-      if (saved) {
-        showPlan(JSON.parse(saved));
-      }
-    });
+    }    // Załaduj zapisane diety przy starcie strony
+    loadSavedDiets();
   </script>
   <footer>
     <p>&copy; 2025 FitPlaner. Wszelkie prawa zastrzeżone.</p>
