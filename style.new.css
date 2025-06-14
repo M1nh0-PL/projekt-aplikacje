@@ -1,0 +1,358 @@
+/* ==========================================================================
+   FitPlaner - style.css
+   ========================================================================== */
+
+:root {
+  --primary-color: #2d3e50;
+  --primary-hover: #3d4e60;
+  --accent-color: #ffb347;
+  --accent-hover: #ffa726;
+  --background-color: #f7f7fa;
+  --text-color: #222;
+  --border-color: #ddd;
+  --error-color: #ff4444;
+  --success-color: #4CAF50;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-lg: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Reset i style podstawowe */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Layout główny */
+main {
+  max-width: 900px;
+  margin: 2em auto;
+  min-height: calc(100vh - 240px);
+  padding: 2em;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Nagłówki */
+h2 {
+  color: var(--primary-color);
+  font-size: 1.8em;
+  margin: 0.5em 0;
+  text-align: center;
+}
+
+h3 {
+  color: var(--primary-color);
+  margin: 0 0 0.5em 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.5em;
+  text-align: center;
+}
+
+/* Nawigacja */
+header {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.5em 1em;
+}
+
+.navbar h1 {
+  font-size: 2em;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5em;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links li a:hover, 
+.nav-links li a:focus {
+  color: var(--accent-color);
+}
+
+/* Formularze */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  margin-bottom: 1.5em;
+}
+
+.form-group {
+  display: grid;
+  gap: 1em;
+  padding: 1.5em;
+  background: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Przyciski formularza */
+.form-buttons {
+  display: flex;
+  gap: 1em;
+  margin-top: 2em;
+  padding: 1.5em;
+  background: #f8f9fa;
+  border-radius: 8px;
+  justify-content: flex-end;
+}
+
+.btn-primary, 
+.btn-secondary, 
+.btn-tertiary {
+  padding: 0.8em 1.6em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: var(--primary-color);
+  box-shadow: 0 2px 4px rgba(255, 179, 71, 0.3);
+}
+
+.btn-secondary {
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid var(--border-color);
+}
+
+.btn-tertiary {
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(45, 62, 80, 0.2);
+}
+
+.btn-primary:hover { 
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 179, 71, 0.4);
+}
+
+.btn-secondary:hover { 
+  background: #e9e9e9;
+  transform: translateY(-1px);
+}
+
+.btn-tertiary:hover { 
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(45, 62, 80, 0.3);
+}
+
+/* Style pól formularza */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+select,
+textarea {
+  padding: 0.8em;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 100%;
+  font-size: 1em;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--accent-color);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(255,179,71,0.2);
+}
+
+/* Style dla radio i checkbox */
+input[type="radio"],
+input[type="checkbox"] {
+  margin: 0;
+  width: 1.2em;
+  height: 1.2em;
+  accent-color: var(--accent-color);
+}
+
+/* Tabele */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+th, td {
+  padding: 1em;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background: var(--primary-color);
+  color: white;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* Przyciski akcji */
+.delete-btn {
+  background: var(--error-color);
+  color: white;
+  border: none;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s;
+}
+
+.delete-btn:hover {
+  background: #cc0000;
+}
+
+.action-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Komunikaty */
+.success-message {
+  background: #dff0d8;
+  color: #3c763d;
+  padding: 1em;
+  border-radius: 4px;
+  margin: 1em 0;
+  border: 1px solid #d6e9c6;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+  main {
+    margin: 1em;
+    padding: 1em;
+  }
+
+  .navbar {
+    padding: 0.5em;
+  }
+  
+  .nav-links {
+    gap: 0.7em;
+    font-size: 0.95em;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+  
+  .form-buttons button {
+    width: 100%;
+  }
+
+  /* Responsywne tabele */
+  table, thead, tbody, tr, th, td {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 1em;
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 1em;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  td:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    flex-direction: column;
+    gap: 1em;
+    text-align: center;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+  }
+}

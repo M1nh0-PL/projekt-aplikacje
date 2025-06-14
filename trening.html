@@ -99,14 +99,14 @@
     function loadSavedWorkouts() {
       const savedWorkouts = JSON.parse(localStorage.getItem('savedWorkouts') || '[]');
       workoutsTableBody.innerHTML = '';
-      
-      savedWorkouts.forEach((workout, index) => {
+        savedWorkouts.forEach((workout, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td>${formatDate(workout.date)}</td>
-          <td>${workout.dzien}</td>
-          <td>${workout.cwiczenia.join(', ')}</td>
-          <td>${workout.poziom}</td>          <td>
+          <td data-label="Data">${formatDate(workout.date)}</td>
+          <td data-label="Dzień tygodnia">${workout.dzien}</td>
+          <td data-label="Typ ćwiczeń">${workout.cwiczenia.join(', ')}</td>
+          <td data-label="Poziom trudności">${workout.poziom}</td>
+          <td data-label="Akcje">
             <button class="delete-workout" data-index="${index}">Usuń</button>
           </td>
         `;

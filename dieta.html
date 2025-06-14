@@ -243,14 +243,13 @@
     function loadSavedDiets() {
       const savedDiets = JSON.parse(localStorage.getItem('savedDiets') || '[]');
       dietsTableBody.innerHTML = '';
-      
-      savedDiets.forEach((dietPlan, index) => {
+        savedDiets.forEach((dietPlan, index) => {
         const row = document.createElement('tr');        row.innerHTML = `
-          <td>${formatDate(dietPlan.date)}</td>
-          <td>${dietPlan.calories} kcal</td>
-          <td>${dietPlan.preference}</td>
-          <td>${dietPlan.allergies.length ? dietPlan.allergies.join(', ') : 'brak'}</td>
-          <td>
+          <td data-label="Data">${formatDate(dietPlan.date)}</td>
+          <td data-label="Kaloryczność">${dietPlan.calories} kcal</td>
+          <td data-label="Preferencje">${dietPlan.preference}</td>
+          <td data-label="Alergie">${dietPlan.allergies.length ? dietPlan.allergies.join(', ') : 'brak'}</td>
+          <td data-label="Akcje">
             <button class="delete-diet" data-index="${index}">Usuń</button>
             <button class="show-diet" data-index="${index}">Pokaż</button>
           </td>
