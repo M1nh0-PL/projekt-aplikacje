@@ -7,6 +7,12 @@ body {
   color: #222;
 }
 
+h2{
+  color: #2d3e50;
+  font-size: 1.8em;
+  margin: 0.5em 0;
+  text-align: center;
+}
 header {
   background: #2d3e50;
   color: #fff;
@@ -75,6 +81,7 @@ main {
 .banner h2 {
   margin: 0.5em 0 1em 0;
   font-size: 2em;
+  
 }
 
 .banner button {
@@ -180,7 +187,8 @@ h3 {
   font-weight: 600;
   border-bottom: 2px solid #ffb347;
   padding-bottom: 0.5em;
-}
+  text-align: center;
+  }
 
 select[multiple] {
   height: auto;
@@ -553,6 +561,8 @@ footer {
   margin-top: 1em;
   background: white;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 #workoutsTable th,
@@ -563,9 +573,9 @@ footer {
 }
 
 #workoutsTable th {
-  background: #f8f9fa;
+  background: #2d3e50;
   font-weight: 600;
-  color: #2d3e50;
+  color: white;
 }
 
 #workoutsTable tr:hover {
@@ -588,46 +598,75 @@ footer {
 
 #savedDiets {
   margin-top: 2em;
-  padding: 1em;
 }
 
 #dietsTable {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1em;
   background: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-#dietsTable th,
-#dietsTable td {
-  padding: 0.8em;
-  text-align: left;
-  border-bottom: 1px solid #eee;
+#dietsTable thead {
+  background: #2d3e50;
+  color: white;
 }
 
 #dietsTable th {
-  background: #f8f9fa;
+  text-align: left;
+  padding: 1em;
   font-weight: 600;
-  color: #2d3e50;
+  font-size: 0.95em;
 }
 
-#dietsTable tr:hover {
-  background-color: #f5f5f5;
+#dietsTable td {
+  padding: 1em;
+  border-bottom: 1px solid #eee;
 }
 
-.delete-diet {
-  background: #ff4444;
-  color: white;
+#dietsTable tr:last-child td {
+  border-bottom: none;
+}
+
+#dietsTable tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+#dietsTable td:last-child {
+  display: flex;
+  gap: 0.5em;
+}
+
+#dietsTable .delete-diet,
+#dietsTable .show-diet {
+  padding: 0.5em 1em;
   border: none;
-  padding: 0.4em 0.8em;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.delete-diet:hover {
-  background: #cc0000;
+#dietsTable .delete-diet {
+  background-color: #ff4757;
+  color: white;
+}
+
+#dietsTable .show-diet {
+  background-color: #2d3e50;
+  color: white;
+}
+
+#dietsTable .delete-diet:hover {
+  background-color: #ff6b81;
+  transform: translateY(-1px);
+}
+
+#dietsTable .show-diet:hover {
+  background-color: #3d4e60;
+  transform: translateY(-1px);
 }
 
 .success-message {
@@ -647,6 +686,20 @@ footer {
 
 .success-message p {
   margin: 0.5em 0;
+}
+
+.diet-details {
+  margin-top: 2em;
+  padding: 1em;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.diet-details h3 {
+  margin-top: 0;
+  color: #2d3e50;
+  border-bottom: 2px solid #ffb347;
 }
 
 .diet-details td {

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Dietetyczny</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>Plan Dietetyczny</h1>
+  <form id="dietForm">
+    <label>Kaloryczność:
+      <input type="number" name="calories" required>
+    </label>
+
+    <label>Preferencje żywieniowe:</label>
+    <label><input type="radio" name="preference" value="wegetariańska"> Wegetariańska</label>
+    <label><input type="radio" name="preference" value="tradycyjna"> Tradycyjna</label>
+
+    <label>Alergie:</label>
+    <label><input type="checkbox" name="allergies" value="orzechy"> Orzechy</label>
+    <label><input type="checkbox" name="allergies" value="nabiał"> Nabiał</label>
+    <label><input type="checkbox" name="allergies" value="gluten"> Gluten</label>
+
+    <label>Dodatkowe informacje:
+      <textarea name="notes" rows="4"></textarea>
+    </label>
+
+    <button type="submit">Zapisz plan</button>
+    <button type="button" id="loadPlan">Wygeneruj przykładowy plan</button>
+  </form>
+
+  <div class="plan" id="planDisplay"></div>
+
+  <script>
+    const form = document.getElementById('dietaForm');
+    const planDisplay = document.getElementById('planDisplay');
+    const loadPlanBtn = document.getElementById('loadPlan');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = {
+        calories: formData.get('calories'),
+        preference: formData.get('preference'),
+        allergies: formData.getAll('allergies'),
+        notes: formData.get('notes')
+      };
+      localStorage.setItem('dietPlan', JSON.stringify(data));
+      showPlan(data);
+    });
+
+    loadPlanBtn.addEventListener('click', () => {
+      fetch('plan.json')
+        .then(res => res.json())
+        .then(data => {
+          localStorage.setItem('dietPlan', JSON.stringify(data));
+          showPlan(data);
+        });
+    });
+
+    function showPlan(data) {
+      const diet = generateSampleDiet(data);
+      planDisplay.innerHTML = `
+        <h2>Twój Plan</h2>
+        <p><strong>Kaloryczność:</strong> ${data.calories}</p>
+        <p><strong>Preferencje:</strong> ${data.preference}</p>
+        <p><strong>Alergie:</strong> ${data.allergies?.join(', ') || 'brak'}</p>
+        <p><strong>Notatki:</strong> ${data.notes || 'brak'}</p>
+        <h3>Przykładowa dieta:</h3>
+        <ul>
+          ${diet.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+      `;
+    }
+
+    function generateSampleDiet(data) {
+      const kcal = parseInt(data.calories);
+      const level = [2000, 2500, 3000, 3500].includes(kcal) ? kcal : 2000;
+
+      const diets = {
+        wegetariańska: {
+          2000: [
+            'Owsianka z owocami i orzechami',
+            'Zupa z soczewicy',
+            'Makaron pełnoziarnisty z warzywami',
+            'Jogurt naturalny z miodem'
+          ],
+          2500: [
+            'Smoothie z bananem i masłem orzechowym',
+            'Zupa z ciecierzycy i ziemniaków',
+            'Gulasz warzywny z kaszą gryczaną',
+            'Sałatka z awokado i jajkiem'
+          ],
+          3000: [
+            'Tofu z ryżem i warzywami',
+            'Burgery z soczewicy',
+            'Zupa krem z brokułów z grzankami',
+            'Pudding chia z mlekiem roślinnym'
+          ],
+          3500: [
+            'Szakszuka z pieczywem pełnoziarnistym',
+            'Ziemniaki z fasolą i sosem pomidorowym',
+            'Kasza jaglana z warzywami i oliwą',
+            'Mus owocowy z bakaliami'
+          ]
+        },
+        tradycyjna: {
+          2000: [
+            'Jajecznica z pieczywem i pomidorem',
+            'Kurczak z ryżem i surówką',
+            'Zupa ogórkowa z ziemniakami',
+            'Twaróg z miodem i owocami'
+          ],
+          2500: [
+            'Kanapki z wędliną i warzywami',
+            'Gulasz z wołowiny z kaszą jęczmienną',
+            'Zupa pomidorowa z ryżem',
+            'Kefir z otrębami'
+          ],
+          3000: [
+            'Omlet z warzywami',
+            'Schabowy z ziemniakami i buraczkami',
+            'Rosół z makaronem',
+            'Ryż na mleku z cynamonem'
+          ],
+          3500: [
+            'Parówki z jajkiem i bułką',
+            'Bigós z chlebem',
+            'Zupa fasolowa',
+            'Sałatka jarzynowa z majonezem'
+          ]
+        }
+      };
+
+      let diet = diets[data.preference]?.[level] || [];
+
+      // Modyfikacja ze względu na alergie
+      if (data.allergies?.includes('nabiał')) {
+        diet = diet.map(item => item.replace(/(twaróg|kefir|jogurt|ser|mleko)/gi, 'napój roślinny'));
+      }
+      if (data.allergies?.includes('gluten')) {
+        diet = diet.map(item => item.replace(/(pieczywem|kanapki|makaron|bułka|chleb)/gi, 'alternatywa bezglutenowa'));
+      }
+      if (data.allergies?.includes('orzechy')) {
+        diet = diet.map(item => item.replace(/orzech(y|ami)?/gi, 'pestki słonecznika'));
+      }
+
+      return diet;
+    }
+
+    // Załaduj zapisany plan po odświeżeniu strony
+    window.addEventListener('load', () => {
+      const saved = localStorage.getItem('dietPlan');
+      if (saved) {
+        showPlan(JSON.parse(saved));
+      }
+    });
+  </script>
+</body>
+</html>

@@ -56,15 +56,15 @@
         <label><input type="radio" name="poziom" value="bardzo zaawansowany"> Bardzo Zaawansowany</label>
         <label><input type="radio" name="poziom" value="ciężki"> Ciężki</label>
       </div>
-
+  
       <button type="submit">Zapisz plan</button>
       </form>      <div id="planTreningowy"></div>
       
       <section id="savedWorkouts">
         <h3>Zapisane treningi</h3>
         <table id="workoutsTable">
-          <thead>
-            <tr>
+          <thead>            <tr>
+              <th>Data</th>
               <th>Dzień tygodnia</th>
               <th>Typ ćwiczeń</th>
               <th>Poziom trudności</th>
@@ -84,6 +84,17 @@
     const planDisplay = document.getElementById('planTreningowy');
     const workoutsTableBody = document.querySelector('#workoutsTable tbody');
 
+    // Format date function
+    function formatDate(date) {
+      const d = new Date(date);
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      return `${day}.${month}.${year} ${hours}:${minutes}`;
+    }
+
     // Load saved workouts on page load
     function loadSavedWorkouts() {
       const savedWorkouts = JSON.parse(localStorage.getItem('savedWorkouts') || '[]');
@@ -92,10 +103,10 @@
       savedWorkouts.forEach((workout, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
+          <td>${formatDate(workout.date)}</td>
           <td>${workout.dzien}</td>
           <td>${workout.cwiczenia.join(', ')}</td>
-          <td>${workout.poziom}</td>
-          <td>
+          <td>${workout.poziom}</td>          <td>
             <button class="delete-workout" data-index="${index}">Usuń</button>
           </td>
         `;
@@ -103,7 +114,27 @@
       });
     }
 
-    // Delete workout from local storage
+    // Handle form submission
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const dzien = document.getElementById('dzien').value;
+      const cwiczenia = [...document.querySelectorAll('input[name="cwiczenie"]:checked')].map(input => input.value);
+      const poziom = document.querySelector('input[name="poziom"]:checked').value;
+
+      const workout = {
+        date: new Date().toISOString(),
+        dzien,
+        cwiczenia,
+        poziom
+      };
+
+      const savedWorkouts = JSON.parse(localStorage.getItem('savedWorkouts') || '[]');
+      savedWorkouts.push(workout);
+      localStorage.setItem('savedWorkouts', JSON.stringify(savedWorkouts));
+
+      loadSavedWorkouts();
+      form.reset();
+    });    // Handle workout deletion
     workoutsTableBody.addEventListener('click', (e) => {
       if (e.target.classList.contains('delete-workout')) {
         const index = e.target.dataset.index;
@@ -114,42 +145,7 @@
       }
     });
 
-    // Handle form submission
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const dzien = document.getElementById('dzien').value;
-      const cwiczenia = Array.from(document.querySelectorAll('input[name="cwiczenie"]:checked'))
-        .map(input => input.value);
-      const poziom = document.querySelector('input[name="poziom"]:checked').value;
-
-      const workout = {
-        dzien: dzien,
-        cwiczenia: cwiczenia,
-        poziom: poziom
-      };
-
-      // Save to local storage
-      const savedWorkouts = JSON.parse(localStorage.getItem('savedWorkouts') || '[]');
-      savedWorkouts.push(workout);
-      localStorage.setItem('savedWorkouts', JSON.stringify(savedWorkouts));
-
-      // Show success message
-      planDisplay.innerHTML = `
-        <div class="success-message">
-          <h3>Plan treningu został zapisany!</h3>
-          <p><strong>Dzień:</strong> ${dzien}</p>
-          <p><strong>Ćwiczenia:</strong> ${cwiczenia.join(', ')}</p>
-          <p><strong>Poziom:</strong> ${poziom}</p>
-        </div>
-      `;
-
-      // Refresh table and reset form
-      loadSavedWorkouts();
-      form.reset();
-    });
-
-    // Load saved workouts when page loads
+    // Load saved workouts on page load
     loadSavedWorkouts();
   </script>
 </body>
